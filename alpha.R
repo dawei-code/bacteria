@@ -8,11 +8,11 @@ library(readxl)
 #加载函数
 alpha <- function(x, tree = NULL, base = exp(1)) {
   est <- estimateR(x)
-  Richness <- est[1, ]
+  Richness <- est[1, ]#即为observed otu
   Chao1 <- est[2, ]
   ACE <- est[4, ]
   Shannon <- diversity(x, index = 'shannon', base = base)
-  Simpson <- diversity(x, index = 'simpson')	#Gini-Simpson 指数 
+  Simpson <- 1-diversity(x, index = 'simpson')	#小白鱼原始的为Gini-Simpson 指数 ，此处予以修改，改为1-Gini-Simpson
   Pielou <- Shannon / log(Richness, base)
   goods_coverage <- 1 - rowSums(x == 1) / rowSums(x)
   
@@ -50,21 +50,8 @@ plot_alpha <- left_join(alpha_all,sample_data_raw, by= "ID")
 dput(names(plot_alpha))
 
 
-# plot
-theme_set(theme_bw())
-
-g <- ggplot(plot_alpha, aes(group,Richness, 
-                            fill=group))
-g +  geom_dotplot(binaxis='y', 
-               stackdir='center', 
-               dotsize = .5) +
-  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
-  labs(title="Richness", 
-       x=NULL,
-       y=NULL)
 
 
-source("D:/Users/wotri/Documents/R work/table/mytable_fun_liangzu_wilcoxon.R")###两组比较函数
 source("../table/mytable_fun_liangzu_wilcoxon_20240405.R")###两组比较函数
 
 mydata <- plot_alpha
@@ -86,3 +73,67 @@ table_new$jieguo
 
 table_new$table_fenzu_SD
 
+# plot
+#oberved otu
+theme_set(theme_bw())
+
+g <- ggplot(plot_alpha, aes(group,Richness, 
+                            fill=group))
+g +  geom_dotplot(binaxis='y', 
+               stackdir='center', 
+               dotsize = .5) +
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="Observed otu", 
+       x=NULL,
+       y=NULL)
+
+#shannon
+theme_set(theme_bw())
+
+g <- ggplot(plot_alpha, aes(group,Shannon, 
+                            fill=group))
+g +  geom_dotplot(binaxis='y', 
+               stackdir='center', 
+               dotsize = .5) +
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="Shannon", 
+       x=NULL,
+       y=NULL)
+
+#Simpson
+theme_set(theme_bw())
+
+g <- ggplot(plot_alpha, aes(group,Simpson, 
+                            fill=group))
+g +  geom_dotplot(binaxis='y', 
+               stackdir='center', 
+               dotsize = .5) +
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="Simpson", 
+       x=NULL,
+       y=NULL)
+#Chao1
+
+theme_set(theme_bw())
+
+g <- ggplot(plot_alpha, aes(group,Chao1, 
+                            fill=group))
+g +  geom_dotplot(binaxis='y', 
+               stackdir='center', 
+               dotsize = .5) +
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="Chao1", 
+       x=NULL,
+       y=NULL)
+ #ACE
+theme_set(theme_bw())
+
+g <- ggplot(plot_alpha, aes(group,ACE, 
+                            fill=group))
+g +  geom_dotplot(binaxis='y', 
+               stackdir='center', 
+               dotsize = .5) +
+  theme(axis.text.x = element_text(angle=65, vjust=0.6)) + 
+  labs(title="ACE", 
+       x=NULL,
+       y=NULL)
